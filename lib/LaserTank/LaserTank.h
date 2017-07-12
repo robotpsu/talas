@@ -51,9 +51,13 @@ class LaserTank
     byte health;
     String name;
 
+    // L289N driver input pins
     byte pin_in1, pin_in2, pin_in3, pin_in4;
+    // L289N driver enable pins
     byte pin_en1, pin_en2;
+    // Laser control pin
     byte pin_laser;
+    // Health indicator (LEDs) control pins
     byte pin_dead, pin_life1, pin_life2, pin_life3;
 
     //Servo turret1, turret2;
