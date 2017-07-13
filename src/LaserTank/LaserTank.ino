@@ -42,7 +42,7 @@ void loop() {
       case '5': tank.fire(); break;
 
       // Simulate hit
-      case '.': tank.hit(); break;
+      case '*': tank.hit(); break;
 
       // Reset tank health
       case 'R': tank.reset(); break;
