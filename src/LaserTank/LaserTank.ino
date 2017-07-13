@@ -48,9 +48,12 @@ void loop() {
       case 'R': tank.reset(); break;
 
       // Send tank data
-      case 'N': Serial.print(tank.getName()); Serial.write(0); break;
+      case 'N': Serial.print(tank.getName()); Serial.print('\n'); break;
       case 'M': Serial.write(tank.getMaxHealth()); break;
       case 'H': Serial.write(tank.getHealth()); break;
+
+      // Rename tank
+      case '.': tank.setName(Serial.readStringUntil('\n')); break;
     }
     Serial.flush();
   }

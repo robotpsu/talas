@@ -23,6 +23,9 @@ class LaserTank
     byte getHealth();
     String getName();
 
+    // Set tank data
+    void setName(String);
+
     // Tank movement
     void forward();
     void backward();

@@ -36,12 +36,16 @@ void LaserTank::setHealthPins(byte dead, byte life1, byte life2, byte life3) {
   pinMode(pin_life3 = life3, OUTPUT);
 }
 
+byte LaserTank::getHealth() {
+  return health;
+}
+
 String LaserTank::getName() {
   return name;
 }
 
-byte LaserTank::getHealth() {
-  return health;
+void LaserTank::setName(String n) {
+  name = n;
 }
 
 void LaserTank::forward() {
