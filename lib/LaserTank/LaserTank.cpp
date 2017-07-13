@@ -1,40 +1,55 @@
 #include "LaserTank.h"
 
 const char LaserTank::stringTerminator = BT_STRING_TERMINATOR;
+
 const byte LaserTank::maxHealth = TANK_MAX_HEALTH;
+
+const byte LaserTank::minAngleH = TURRET_MIN_H;
+const byte LaserTank::maxAngleH = TURRET_MAX_H;
+const byte LaserTank::minAngleV = TURRET_MIN_V;
+const byte LaserTank::maxAngleV = TURRET_MAX_V;
+const byte LaserTank::deltaH = TURRET_DELTA_H;
+const byte LaserTank::deltaV = TURRET_DELTA_V;
 
 byte LaserTank::getMaxHealth() {
   return maxHealth;
 }
 
-LaserTank::LaserTank(String n) {
-  pin_in1 = pin_in2 = pin_in3 = pin_in4 = pin_en1 = pin_en2
-    = pin_laser = pin_dead = pin_life1 = pin_life2 = pin_life3 = 0;
+LaserTank::LaserTank(String n) : name(n) {
+  pinIn1 = pinIn2 = pinIn3 = pinIn4 = pinEn1 = pinEn2
+    = pinTurretH = pinTurretV = pinLaser
+    = pinDead = pinLife1 = pinLife2 = pinLife3 = 0;
 
-  name = n;
+  angleH = TURRET_START_H;
+  angleV = TURRET_START_V;
 }
 
 void LaserTank::setDriverPins(byte in1, byte in2, byte in3, byte in4) {
-  pinMode(pin_in1 = in1, OUTPUT);
-  pinMode(pin_in2 = in2, OUTPUT);
-  pinMode(pin_in3 = in3, OUTPUT);
-  pinMode(pin_in4 = in4, OUTPUT);
+  pinMode(pinIn1 = in1, OUTPUT);
+  pinMode(pinIn2 = in2, OUTPUT);
+  pinMode(pinIn3 = in3, OUTPUT);
+  pinMode(pinIn4 = in4, OUTPUT);
 }
 
 void LaserTank::setSpeedPins(byte en1, byte en2) {
-  pinMode(pin_en1 = en1, OUTPUT);
-  pinMode(pin_en2 = en2, OUTPUT);
+  pinMode(pinEn1 = en1, OUTPUT);
+  pinMode(pinEn2 = en2, OUTPUT);
+}
+
+void LaserTank::setTurretPins(byte h, byte v) {
+  turretH.attach(pinTurretH = h);
+  turretV.attach(pinTurretV = v);
 }
 
 void LaserTank::setLaserPin(byte laser) {
-  pinMode(pin_laser = laser, OUTPUT);
+  pinMode(pinLaser = laser, OUTPUT);
 }
 
 void LaserTank::setHealthPins(byte dead, byte life1, byte life2, byte life3) {
-  pinMode(pin_dead  = dead,  OUTPUT);
-  pinMode(pin_life1 = life1, OUTPUT);
-  pinMode(pin_life2 = life2, OUTPUT);
-  pinMode(pin_life3 = life3, OUTPUT);
+  pinMode(pinDead  = dead,  OUTPUT);
+  pinMode(pinLife1 = life1, OUTPUT);
+  pinMode(pinLife2 = life2, OUTPUT);
+  pinMode(pinLife3 = life3, OUTPUT);
 }
 
 byte LaserTank::getHealth() {
@@ -50,84 +65,78 @@ void LaserTank::setName(String n) {
 }
 
 void LaserTank::forward() {
-  if (!health || !pin_in1) return;
+  if (!health || !pinIn1) return;
 
-  digitalWrite(pin_in1, HIGH);
-  digitalWrite(pin_in2, LOW);
-  digitalWrite(pin_in3, HIGH);
-  digitalWrite(pin_in4, LOW);
+  digitalWrite(pinIn1, HIGH);
+  digitalWrite(pinIn2, LOW);
+  digitalWrite(pinIn3, HIGH);
+  digitalWrite(pinIn4, LOW);
 }
 
 void LaserTank::backward() {
-  if (!health || !pin_in1) return;
+  if (!health || !pinIn1) return;
 
-  digitalWrite(pin_in1, LOW);
-  digitalWrite(pin_in2, HIGH);
-  digitalWrite(pin_in3, LOW);
-  digitalWrite(pin_in4, HIGH);
+  digitalWrite(pinIn1, LOW);
+  digitalWrite(pinIn2, HIGH);
+  digitalWrite(pinIn3, LOW);
+  digitalWrite(pinIn4, HIGH);
 }
 
 void LaserTank::left() {
-  if (!health || !pin_in1) return;
+  if (!health || !pinIn1) return;
 
-  digitalWrite(pin_in1, HIGH);
-  digitalWrite(pin_in2, LOW);
-  digitalWrite(pin_in3, LOW);
-  digitalWrite(pin_in4, HIGH);
+  digitalWrite(pinIn1, HIGH);
+  digitalWrite(pinIn2, LOW);
+  digitalWrite(pinIn3, LOW);
+  digitalWrite(pinIn4, HIGH);
 }
 
 void LaserTank::right() {
-  if (!health || !pin_in1) return;
+  if (!health || !pinIn1) return;
 
-  digitalWrite(pin_in1, LOW);
-  digitalWrite(pin_in2, HIGH);
-  digitalWrite(pin_in3, HIGH);
-  digitalWrite(pin_in4, LOW);
+  digitalWrite(pinIn1, LOW);
+  digitalWrite(pinIn2, HIGH);
+  digitalWrite(pinIn3, HIGH);
+  digitalWrite(pinIn4, LOW);
 }
 
 void LaserTank::stop() {
-  if (!pin_in1) return;
+  if (!pinIn1) return;
 
-  digitalWrite(pin_in1, LOW);
-  digitalWrite(pin_in2, LOW);
-  digitalWrite(pin_in3, LOW);
-  digitalWrite(pin_in4, LOW);
+  digitalWrite(pinIn1, LOW);
+  digitalWrite(pinIn2, LOW);
+  digitalWrite(pinIn3, LOW);
+  digitalWrite(pinIn4, LOW);
 }
 
 void LaserTank::turretUp() {
-  if (!health) return;
-
-  // TODO
+  if (health && pinTurretV && angleV < maxAngleV)
+    turretV.write(angleV += deltaV);
 }
 
 void LaserTank::turretDown() {
-  if (!health) return;
-
-  // TODO
+  if (health && pinTurretV && angleV > minAngleV)
+    turretV.write(angleV -= deltaV);
 }
 
 void LaserTank::turretLeft() {
-  if (!health) return;
-
-  // TODO
+  if (health && pinTurretH && angleH > minAngleH)
+    turretH.write(angleH -= deltaH);
 }
 
 void LaserTank::turretRight() {
-  if (!health) return;
-
-  // TODO
+  if (health && pinTurretH && angleH < maxAngleH)
+    turretH.write(angleH += deltaH);
 }
 
-void LaserTank::turretStop() {
-  // TODO
-}
+void LaserTank::turretStop() {}
 
 void LaserTank::fire() {
-  if (!health || !pin_laser) return;
+  if (!health || !pinLaser) return;
 
-  digitalWrite(pin_laser, HIGH);
+  digitalWrite(pinLaser, HIGH);
   delay(5);
-  digitalWrite(pin_laser, LOW);
+  digitalWrite(pinLaser, LOW);
 }
 
 void LaserTank::hit() {
@@ -136,12 +145,12 @@ void LaserTank::hit() {
 }
 
 void LaserTank::showHealth() {
-  if (!pin_dead) return;
+  if (!pinDead) return;
 
-  digitalWrite(pin_life3, health >= 3 ? HIGH : LOW);
-  digitalWrite(pin_life2, health >= 2 ? HIGH : LOW);
-  digitalWrite(pin_life1, health >= 1 ? HIGH : LOW);
-  digitalWrite(pin_dead, health ? LOW : HIGH);
+  digitalWrite(pinLife3, health >= 3 ? HIGH : LOW);
+  digitalWrite(pinLife2, health >= 2 ? HIGH : LOW);
+  digitalWrite(pinLife1, health >= 1 ? HIGH : LOW);
+  digitalWrite(pinDead, health ? LOW : HIGH);
 }
 
 void LaserTank::reset() {

@@ -5,8 +5,18 @@
 #include <Servo.h>
 
 #define BT_STRING_TERMINATOR '\n'
+
 #define TANK_MAX_NAME_LENGTH 24
 #define TANK_MAX_HEALTH 3
+
+#define TURRET_START_H 0
+#define TURRET_START_V 0
+#define TURRET_MIN_H 0
+#define TURRET_MAX_H 180
+#define TURRET_MIN_V 0
+#define TURRET_MAX_V 90
+#define TURRET_DELTA_H 1
+#define TURRET_DELTA_V 1
 
 class LaserTank
 {
@@ -19,6 +29,7 @@ class LaserTank
     // Set Arduino board pins
     void setDriverPins(byte, byte, byte, byte);
     void setSpeedPins(byte, byte);
+    void setTurretPins(byte, byte);
     void setLaserPin(byte);
     void setHealthPins(byte, byte, byte, byte);
 
@@ -38,20 +49,26 @@ class LaserTank
 
   private:
     static const byte maxHealth;
+    static const byte minAngleH, maxAngleH;
+    static const byte minAngleV, maxAngleV;
+    static const byte deltaH, deltaV;
 
     byte health;
     String name;
 
     // L289N driver input pins
-    byte pin_in1, pin_in2, pin_in3, pin_in4;
+    byte pinIn1, pinIn2, pinIn3, pinIn4;
     // L289N driver enable pins
-    byte pin_en1, pin_en2;
+    byte pinEn1, pinEn2;
+    // Turret rotation control pins
+    byte pinTurretH, pinTurretV;
     // Laser control pin
-    byte pin_laser;
+    byte pinLaser;
     // Health indicator (LEDs) control pins
-    byte pin_dead, pin_life1, pin_life2, pin_life3;
+    byte pinDead, pinLife1, pinLife2, pinLife3;
 
-    Servo turret1, turret2;
+    Servo turretH, turretV;
+    byte angleH, angleV;
 
     // Tank movement
     void forward();
