@@ -1,5 +1,6 @@
 #include "LaserTank.h"
 
+const char LaserTank::stringTerminator = BT_STRING_TERMINATOR;
 const byte LaserTank::maxHealth = TANK_MAX_HEALTH;
 
 byte LaserTank::getMaxHealth() {
@@ -145,6 +146,42 @@ void LaserTank::showHealth() {
 
 void LaserTank::reset() {
   health = maxHealth;
+}
+
+void LaserTank::dispatch(byte cmd) {
+    switch (cmd) {
+      // Tank movement
+      case 'w': forward();  break;
+      case 'a': left();     break;
+      case 's': backward(); break;
+      case 'd': right();    break;
+      case 'x': stop();     break;
+
+      // Turret rotation
+      case '8': turretUp();    break;
+      case '6': turretRight(); break;
+      case '4': turretLeft();  break;
+      case '2': turretDown();  break;
+      case '0': turretStop();  break;
+
+      // Fire laser gun
+      case '5': fire(); break;
+
+      // Simulate hit
+      case '*': hit(); break;
+
+      // Reset tank health
+      case 'R': reset(); break;
+
+      // Send tank data
+      case 'M': Serial.write(getMaxHealth()); break;
+      case 'H': Serial.write(getHealth()); break;
+      case 'N': Serial.print(getName()); Serial.print(stringTerminator); break;
+
+      // Rename tank
+      case '_': setName(Serial.readStringUntil(stringTerminator)); break;
+    }
+    Serial.flush();
 }
 
 /* vim: set ft=arduino et sw=2 ts=2: */

@@ -2,14 +2,17 @@
 #define LASERTANK_H
 
 #include <Arduino.h>
-//#include <Servo.h>
+#include <Servo.h>
 
+#define BT_STRING_TERMINATOR '\n'
 #define TANK_MAX_NAME_LENGTH 24
 #define TANK_MAX_HEALTH 3
 
 class LaserTank
 {
   public:
+    static const char stringTerminator;
+
     // Constructor
     LaserTank(String);
 
@@ -26,6 +29,29 @@ class LaserTank
 
     // Set tank data
     void setName(String);
+
+    // Reset health
+    void reset();
+
+    // Dispatch commands
+    void dispatch(byte);
+
+  private:
+    static const byte maxHealth;
+
+    byte health;
+    String name;
+
+    // L289N driver input pins
+    byte pin_in1, pin_in2, pin_in3, pin_in4;
+    // L289N driver enable pins
+    byte pin_en1, pin_en2;
+    // Laser control pin
+    byte pin_laser;
+    // Health indicator (LEDs) control pins
+    byte pin_dead, pin_life1, pin_life2, pin_life3;
+
+    Servo turret1, turret2;
 
     // Tank movement
     void forward();
@@ -46,25 +72,6 @@ class LaserTank
     // Handle hit
     void hit();
     void showHealth();
-
-    // Reset health
-    void reset();
-
-  private:
-    static const byte maxHealth;
-    byte health;
-    String name;
-
-    // L289N driver input pins
-    byte pin_in1, pin_in2, pin_in3, pin_in4;
-    // L289N driver enable pins
-    byte pin_en1, pin_en2;
-    // Laser control pin
-    byte pin_laser;
-    // Health indicator (LEDs) control pins
-    byte pin_dead, pin_life1, pin_life2, pin_life3;
-
-    //Servo turret1, turret2;
 };
 
 #endif
