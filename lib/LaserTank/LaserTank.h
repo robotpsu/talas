@@ -9,29 +9,79 @@
 #define TANK_MAX_NAME_LENGTH 24
 #define TANK_MAX_HEALTH 3
 
-#define TURRET_START_H 0
-#define TURRET_START_V 0
-#define TURRET_MIN_H 0
-#define TURRET_MAX_H 180
-#define TURRET_MIN_V 0
-#define TURRET_MAX_V 90
-#define TURRET_DELTA_H 1
-#define TURRET_DELTA_V 1
+#define TURRET_START_H 90
+#define TURRET_START_V  0
+#define TURRET_DELTA_H  1
+#define TURRET_DELTA_V  1
+#define TURRET_MIN_H   30
+#define TURRET_MAX_H  150
+#define TURRET_MIN_V    0
+#define TURRET_MAX_V   60
+
+class Turret
+{
+  public:
+    // Constructor
+    Turret();
+
+    // Set servos angle range
+    void setRange(byte, byte, byte, byte);
+    // Set angle increment/decrement value
+    void setDelta(byte, byte);
+
+    // Attach laser and servos to pins
+    void attach(byte);
+    void attach(byte, byte, byte);
+
+    // Toggle turret state
+    void enable();
+    void disable();
+
+    // Reset turret
+    void reset();
+
+    // Get current position (in degrees)
+    byte getH();
+    byte getV();
+
+    // Rotate turret
+    void up();
+    void down();
+    void left();
+    void right();
+
+    // Fire laser gun
+    void fire();
+
+  private:
+    static const byte h0, v0;
+
+    Servo servoH, servoV;
+
+    byte pinLaser, pinH, pinV;
+
+    boolean enabled;
+
+    byte h, v;
+    byte dH, dV;
+    byte minH, maxH;
+    byte minV, maxV;
+
+    void impulse(unsigned long);
+};
 
 class LaserTank
 {
   public:
-    static const char stringTerminator;
-
     // Constructor
     LaserTank(String);
 
     // Set Arduino board pins
-    void setDriverPins(byte, byte, byte, byte);
-    void setSpeedPins(byte, byte);
-    void setTurretPins(byte, byte);
-    void setLaserPin(byte);
-    void setHealthPins(byte, byte, byte, byte);
+    void attachDriver(byte, byte, byte, byte);
+    void attachDriver(byte, byte, byte, byte, byte, byte);
+    void attachTurret(byte);
+    void attachTurret(byte, byte, byte);
+    void attachHealth(byte, byte, byte, byte);
 
     // Get tank data
     static byte getMaxHealth();
@@ -40,35 +90,33 @@ class LaserTank
 
     // Set tank data
     void setName(String);
+    void setTurretRange(byte, byte, byte, byte);
+    void setTurretDelta(byte, byte);
 
     // Reset health
-    void reset();
+    void resetHealth();
+
+    // Reset turret
+    void resetTurret();
 
     // Dispatch commands
     void dispatch(byte);
 
   private:
+    static const char stringTerminator;
     static const byte maxHealth;
-    static const byte minAngleH, maxAngleH;
-    static const byte minAngleV, maxAngleV;
-    static const byte deltaH, deltaV;
-
-    byte health;
-    String name;
 
     // L289N driver input pins
     byte pinIn1, pinIn2, pinIn3, pinIn4;
     // L289N driver enable pins
     byte pinEn1, pinEn2;
-    // Turret rotation control pins
-    byte pinTurretH, pinTurretV;
-    // Laser control pin
-    byte pinLaser;
     // Health indicator (LEDs) control pins
     byte pinDead, pinLife1, pinLife2, pinLife3;
 
-    Servo turretH, turretV;
-    byte angleH, angleV;
+    String name;
+    byte health;
+
+    Turret turret;
 
     // Tank movement
     void forward();
@@ -76,15 +124,6 @@ class LaserTank
     void left();
     void right();
     void stop();
-
-    // Turret control
-    void turretUp();
-    void turretDown();
-    void turretLeft();
-    void turretRight();
-    void turretStop();
-
-    void fire();
 
     // Handle hit
     void hit();

@@ -1,15 +1,11 @@
+/*
+ * Laser tank class implementation
+ */
+
 #include "LaserTank.h"
 
 const char LaserTank::stringTerminator = BT_STRING_TERMINATOR;
-
 const byte LaserTank::maxHealth = TANK_MAX_HEALTH;
-
-const byte LaserTank::minAngleH = TURRET_MIN_H;
-const byte LaserTank::maxAngleH = TURRET_MAX_H;
-const byte LaserTank::minAngleV = TURRET_MIN_V;
-const byte LaserTank::maxAngleV = TURRET_MAX_V;
-const byte LaserTank::deltaH = TURRET_DELTA_H;
-const byte LaserTank::deltaV = TURRET_DELTA_V;
 
 byte LaserTank::getMaxHealth() {
   return maxHealth;
@@ -17,35 +13,32 @@ byte LaserTank::getMaxHealth() {
 
 LaserTank::LaserTank(String n) : name(n) {
   pinIn1 = pinIn2 = pinIn3 = pinIn4 = pinEn1 = pinEn2
-    = pinTurretH = pinTurretV = pinLaser
     = pinDead = pinLife1 = pinLife2 = pinLife3 = 0;
-
-  angleH = TURRET_START_H;
-  angleV = TURRET_START_V;
 }
 
-void LaserTank::setDriverPins(byte in1, byte in2, byte in3, byte in4) {
+void LaserTank::attachDriver(byte in1, byte in2, byte in3, byte in4) {
   pinMode(pinIn1 = in1, OUTPUT);
   pinMode(pinIn2 = in2, OUTPUT);
   pinMode(pinIn3 = in3, OUTPUT);
   pinMode(pinIn4 = in4, OUTPUT);
+  pinEn1 = pinEn2 = 0;
 }
 
-void LaserTank::setSpeedPins(byte en1, byte en2) {
+void LaserTank::attachDriver(byte in1, byte in2, byte in3, byte in4, byte en1, byte en2) {
+  attachDriver(in1, in2, in3, in4);
   pinMode(pinEn1 = en1, OUTPUT);
   pinMode(pinEn2 = en2, OUTPUT);
 }
 
-void LaserTank::setTurretPins(byte h, byte v) {
-  turretH.attach(pinTurretH = h);
-  turretV.attach(pinTurretV = v);
+void LaserTank::attachTurret(byte laser) {
+  turret.attach(laser);
 }
 
-void LaserTank::setLaserPin(byte laser) {
-  pinMode(pinLaser = laser, OUTPUT);
+void LaserTank::attachTurret(byte laser, byte p0, byte p1) {
+  turret.attach(laser, p0, p1);
 }
 
-void LaserTank::setHealthPins(byte dead, byte life1, byte life2, byte life3) {
+void LaserTank::attachHealth(byte dead, byte life1, byte life2, byte life3) {
   pinMode(pinDead  = dead,  OUTPUT);
   pinMode(pinLife1 = life1, OUTPUT);
   pinMode(pinLife2 = life2, OUTPUT);
@@ -62,6 +55,14 @@ String LaserTank::getName() {
 
 void LaserTank::setName(String n) {
   name = n.substring(0, TANK_MAX_NAME_LENGTH);
+}
+
+void LaserTank::setTurretRange(byte h0, byte h1, byte v0, byte v1) {
+  turret.setRange(h0, h1, v0 ,v1);
+}
+
+void LaserTank::setTurretDelta(byte dh, byte dv) {
+  turret.setDelta(dh, dv);
 }
 
 void LaserTank::forward() {
@@ -109,38 +110,14 @@ void LaserTank::stop() {
   digitalWrite(pinIn4, LOW);
 }
 
-void LaserTank::turretUp() {
-  if (health && pinTurretV && angleV < maxAngleV)
-    turretV.write(angleV += deltaV);
-}
-
-void LaserTank::turretDown() {
-  if (health && pinTurretV && angleV > minAngleV)
-    turretV.write(angleV -= deltaV);
-}
-
-void LaserTank::turretLeft() {
-  if (health && pinTurretH && angleH > minAngleH)
-    turretH.write(angleH -= deltaH);
-}
-
-void LaserTank::turretRight() {
-  if (health && pinTurretH && angleH < maxAngleH)
-    turretH.write(angleH += deltaH);
-}
-
-void LaserTank::turretStop() {}
-
-void LaserTank::fire() {
-  if (!health || !pinLaser) return;
-
-  digitalWrite(pinLaser, HIGH);
-  delay(5);
-  digitalWrite(pinLaser, LOW);
-}
-
 void LaserTank::hit() {
-  if (health) health--;
+  if (!health) return;
+
+  if (--health) {
+    turret.enable();
+  } else {
+    turret.disable();
+  }
   showHealth();
 }
 
@@ -153,42 +130,48 @@ void LaserTank::showHealth() {
   digitalWrite(pinDead, health ? LOW : HIGH);
 }
 
-void LaserTank::reset() {
+void LaserTank::resetHealth() {
   health = maxHealth;
+  turret.enable();
+}
+
+void LaserTank::resetTurret() {
+  turret.reset();
 }
 
 void LaserTank::dispatch(byte cmd) {
     switch (cmd) {
-      // Tank movement
+      // Move tank
       case 'w': forward();  break;
       case 'a': left();     break;
       case 's': backward(); break;
       case 'd': right();    break;
       case 'x': stop();     break;
 
-      // Turret rotation
-      case '8': turretUp();    break;
-      case '6': turretRight(); break;
-      case '4': turretLeft();  break;
-      case '2': turretDown();  break;
-      case '0': turretStop();  break;
+      // Rotate turret
+      case '8': turret.up();    break;
+      case '6': turret.right(); break;
+      case '4': turret.left();  break;
+      case '2': turret.down();  break;
+      case '0': turret.reset(); break;
 
       // Fire laser gun
-      case '5': fire(); break;
+      case '5': turret.fire(); break;
 
       // Simulate hit
       case '*': hit(); break;
 
       // Reset tank health
-      case 'R': reset(); break;
+      case 'r': resetHealth(); break;
 
       // Send tank data
-      case 'M': Serial.write(getMaxHealth()); break;
-      case 'H': Serial.write(getHealth()); break;
-      case 'N': Serial.print(getName()); Serial.print(stringTerminator); break;
+      case 'M': Serial.write(maxHealth); break;
+      case 'H': Serial.write(health); break;
+      case 'N': Serial.print(name); Serial.print(stringTerminator); break;
+      case '/': Serial.write(turret.getH()); Serial.write(turret.getV()); break;
 
       // Rename tank
-      case '_': setName(Serial.readStringUntil(stringTerminator)); break;
+      case 'n': setName(Serial.readStringUntil(stringTerminator)); break;
     }
     Serial.flush();
 }

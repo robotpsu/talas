@@ -14,10 +14,12 @@ const long BT_TIMEOUT = 100;
 LaserTank tank(tankName);
 
 void setup() {
-  tank.setDriverPins(2, 3, 4, 5);
-  tank.setLaserPin(PIN_LED);
-  tank.setHealthPins(A0, A1, A2, A3);
-  tank.reset();
+  tank.attachDriver(2, 3, 4, 5);
+  tank.attachTurret(PIN_LED, 6, 7);
+  tank.attachHealth(A0, A1, A2, A3);
+
+  tank.resetHealth();
+  tank.resetTurret();
 
   Serial.begin(BT_SPEED);
   Serial.setTimeout(BT_TIMEOUT);

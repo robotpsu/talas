@@ -1,23 +1,39 @@
 LaserTank     KEYWORD1
-setDriverPins KEYWORD2
-setSpeedPins  KEYWORD2
-setLaserPin   KEYWORD2
-setHealthPins KEYWORD2
+
+attachDriver  KEYWORD2
+attachTurret  KEYWORD2
+attachHealth  KEYWORD2
+
 getMaxHealth  KEYWORD2
 getHealth     KEYWORD2
 getName       KEYWORD2
 setName       KEYWORD2
-forward       KEYWORD2
-backward      KEYWORD2
+
+resetHealth   KEYWORD2
+
+resetTurret   KEYWORD2
+
+dispatch      KEYWORD2
+
+##############################################################################
+Turret        KEYWORD1
+
+setRange      KEYWORD2
+setDelta      KEYWORD2
+
+attach        KEYWORD2
+
+enable        KEYWORD2
+disable       KEYWORD2
+
+reset         KEYWORD2
+
+getH          KEYWORD2
+getV          KEYWORD2
+
+up            KEYWORD2
+down          KEYWORD2
 left          KEYWORD2
 right         KEYWORD2
-stop          KEYWORD2
-turretUp      KEYWORD2
-turretDown    KEYWORD2
-turretLeft    KEYWORD2
-turretRight   KEYWORD2
-turretStop    KEYWORD2
+
 fire          KEYWORD2
-hit           KEYWORD2
-showHealth    KEYWORD2
-reset         KEYWORD2
