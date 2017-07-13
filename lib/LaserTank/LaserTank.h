@@ -4,6 +4,7 @@
 #include <Arduino.h>
 //#include <Servo.h>
 
+#define TANK_MAX_NAME_LENGTH 24
 #define TANK_MAX_HEALTH 3
 
 class LaserTank

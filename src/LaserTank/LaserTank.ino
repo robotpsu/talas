@@ -5,9 +5,11 @@
 #include <LaserTank.h>
 
 const byte PIN_LED = 13;
-const long BT_SPEED = 38400;
 
-LaserTank tank("Танк №1");
+const long BT_SPEED = 38400;
+const long BT_TIMEOUT = 100;
+
+LaserTank tank("СЛУ-01");
 
 void setup() {
   tank.setDriverPins(2, 3, 4, 5);
@@ -16,6 +18,7 @@ void setup() {
   tank.reset();
 
   Serial.begin(BT_SPEED);
+  Serial.setTimeout(BT_TIMEOUT);
 }
 
 void loop() {
@@ -31,7 +34,7 @@ void loop() {
       case 'd': tank.right();    break;
       case 'x': tank.stop();     break;
 
-      // Turret control
+      // Turret rotation
       case '8': tank.turretUp();    break;
       case '6': tank.turretRight(); break;
       case '4': tank.turretLeft();  break;
@@ -48,12 +51,12 @@ void loop() {
       case 'R': tank.reset(); break;
 
       // Send tank data
-      case 'N': Serial.print(tank.getName()); Serial.print('\n'); break;
       case 'M': Serial.write(tank.getMaxHealth()); break;
       case 'H': Serial.write(tank.getHealth()); break;
+      case 'N': Serial.print(tank.getName()); Serial.print('\n'); break;
 
       // Rename tank
-      case '.': tank.setName(Serial.readStringUntil('\n')); break;
+      case '_': tank.setName(Serial.readStringUntil('\n')); break;
     }
     Serial.flush();
   }

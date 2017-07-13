@@ -45,7 +45,7 @@ String LaserTank::getName() {
 }
 
 void LaserTank::setName(String n) {
-  name = n;
+  name = n.substring(0, TANK_MAX_NAME_LENGTH);
 }
 
 void LaserTank::forward() {
