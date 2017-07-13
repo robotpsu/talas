@@ -43,3 +43,9 @@
 ## Android
 
 Для создания приложения для телефона использован [MIT App Inventor 2](http://appinventor.mit.edu/explore/).
+
+### Ошибки
+
+* Bluetooth.Connect: 507: Unable to connect. Is the device turned on?
+* Bluetooth.SendText: 515: Not connected to a Bluetooth device.
+
