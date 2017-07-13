@@ -6,6 +6,7 @@ setHealthPins KEYWORD2
 getMaxHealth  KEYWORD2
 getHealth     KEYWORD2
 getName       KEYWORD2
+setName       KEYWORD2
 forward       KEYWORD2
 backward      KEYWORD2
 left          KEYWORD2
