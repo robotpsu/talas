@@ -60,10 +60,10 @@ byte Turret::getV() {
 }
 
 void Turret::reset() {
-  if (!servoH.attached() || !servoV.attached()) return;
-
-  servoH.write(h = h0);
-  servoV.write(v = v0);
+  if (servoH.attached() && servoV.attached()) {
+    servoH.write(h = h0);
+    servoV.write(v = v0);
+  }
 }
 
 void Turret::up() {
@@ -95,6 +95,8 @@ void Turret::impulse(unsigned long length) {
 void Turret::fire() {
   if (!enabled || !pinLaser) return;
 
+  impulse(5);
+  delay(5);
   impulse(5);
 }
 

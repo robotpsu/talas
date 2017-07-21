@@ -2,14 +2,11 @@
 
 ## Файловая структура
 
-    lib/LaserTank/    — библиотека для Arduino
-        LaserTank.h   — заголовочный файл
-        LaserTank.cpp — класс LaserTank
-        Turret.cpp    — класс Turret
-        keywords.txt  — ключевые слова для Arduino IDE
-    src/LaserTank/
-        LaserTank.ino — скетч для Arduino
-    ai2/
+    LaserTank.ino — скетч для Arduino
+    LaserTank.h   — заголовочный файл библиотеки
+    LaserTank.cpp — класс LaserTank
+    Turret.cpp    — класс Turret
+    arduino/
         LaserTank.aia — проект MIT App Inventor 2 (приложение для Android)
     README.md         — описание проекта
 
@@ -24,7 +21,7 @@
 * `2` — повернуть турель вниз;
 * `4` — повернуть турель влево (рыскание);
 * `6` — повернуть турель вправо;
-* `0` - повернуть турель в исходную позицию;
+* `0` — повернуть турель в исходную позицию;
 * `5` — огонь;
 * `M` — передать максимальное число жизней (1-byte unsigned integer);
 * `H` — передать оставшееся число жизней (текущее «здоровье») (1-byte unsigned integer);

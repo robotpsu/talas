@@ -14,6 +14,20 @@ byte LaserTank::getMaxHealth() {
 LaserTank::LaserTank(String n) : name(n) {
   pinIn1 = pinIn2 = pinIn3 = pinIn4 = pinEn1 = pinEn2
     = pinDead = pinLife1 = pinLife2 = pinLife3 = 0;
+  speed1 = speed2 = TANK_START_SPEED;
+}
+
+void LaserTank::attachBluetooth() {
+  bt = (SoftwareSerial*)&Serial;
+  bt->begin(TANK_BT_SPEED);
+  bt->setTimeout(TANK_BT_TIMEOUT);
+}
+
+void LaserTank::attachBluetooth(byte rx, byte tx) {
+  SoftwareSerial b(rx, tx);
+  bt = &b;
+  bt->begin(TANK_BT_SPEED);
+  bt->setTimeout(TANK_BT_TIMEOUT);
 }
 
 void LaserTank::attachDriver(byte in1, byte in2, byte in3, byte in4) {
@@ -65,49 +79,48 @@ void LaserTank::setTurretDelta(byte dh, byte dv) {
   turret.setDelta(dh, dv);
 }
 
-void LaserTank::forward() {
+void LaserTank::move(byte direction) {
   if (!health || !pinIn1) return;
 
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-  digitalWrite(pinIn3, HIGH);
-  digitalWrite(pinIn4, LOW);
+  digitalWrite(pinIn1, bitRead(direction, 0));
+  digitalWrite(pinIn2, bitRead(direction, 1));
+  digitalWrite(pinIn3, bitRead(direction, 2));
+  digitalWrite(pinIn4, bitRead(direction, 3));
+
+  if (pinEn1)
+    analogWrite(pinEn1, direction ? speed1 : 0);
+  if (pinEn2)
+    analogWrite(pinEn2, direction ? speed2 : 0);
+}
+
+void LaserTank::forward() {
+  move(0b0101);
 }
 
 void LaserTank::backward() {
-  if (!health || !pinIn1) return;
-
-  digitalWrite(pinIn1, LOW);
-  digitalWrite(pinIn2, HIGH);
-  digitalWrite(pinIn3, LOW);
-  digitalWrite(pinIn4, HIGH);
+  move(0b1010);
 }
 
 void LaserTank::left() {
-  if (!health || !pinIn1) return;
-
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-  digitalWrite(pinIn3, LOW);
-  digitalWrite(pinIn4, HIGH);
+  move(0b1001);
 }
 
 void LaserTank::right() {
-  if (!health || !pinIn1) return;
-
-  digitalWrite(pinIn1, LOW);
-  digitalWrite(pinIn2, HIGH);
-  digitalWrite(pinIn3, HIGH);
-  digitalWrite(pinIn4, LOW);
+  move(0b0110);
 }
 
 void LaserTank::stop() {
-  if (!pinIn1) return;
+  move(0);
+}
 
-  digitalWrite(pinIn1, LOW);
-  digitalWrite(pinIn2, LOW);
-  digitalWrite(pinIn3, LOW);
-  digitalWrite(pinIn4, LOW);
+void LaserTank::faster() {
+  speed1++;
+  speed2++;
+}
+
+void LaserTank::slower() {
+  speed1--;
+  speed2--;
 }
 
 void LaserTank::hit() {
@@ -139,20 +152,35 @@ void LaserTank::resetTurret() {
   turret.reset();
 }
 
-void LaserTank::dispatch(byte cmd) {
+void LaserTank::dispatch() {
+  if (!bt) return;
+
+  byte n = bt->available();
+  byte cmd = 0;
+
+  if (n > 0) {
+    cmd = bt->read();
     switch (cmd) {
       // Move tank
       case 'w': forward();  break;
       case 'a': left();     break;
       case 's': backward(); break;
       case 'd': right();    break;
-      case 'x': stop();     break;
+
+      // Stop tank
+      case 'x': stop(); break;
+
+      // Control speed
+      case 'j': slower(); break;
+      case 'k': faster(); break;
 
       // Rotate turret
       case '8': turret.up();    break;
       case '6': turret.right(); break;
       case '4': turret.left();  break;
       case '2': turret.down();  break;
+
+      // Move turret to the initial position
       case '0': turret.reset(); break;
 
       // Fire laser gun
@@ -165,15 +193,17 @@ void LaserTank::dispatch(byte cmd) {
       case 'r': resetHealth(); break;
 
       // Send tank data
-      case 'M': Serial.write(maxHealth); break;
-      case 'H': Serial.write(health); break;
-      case 'N': Serial.print(name); Serial.print(stringTerminator); break;
-      case '/': Serial.write(turret.getH()); Serial.write(turret.getV()); break;
+      case 'M': bt->write(maxHealth); break;
+      case 'H': bt->write(health); break;
+      case 'N': bt->print(name); bt->print(stringTerminator); break;
+      case '/': bt->write(turret.getH()); bt->write(turret.getV()); break;
 
       // Rename tank
-      case 'n': setName(Serial.readStringUntil(stringTerminator)); break;
+      case 'n': setName(bt->readStringUntil(stringTerminator)); break;
     }
-    Serial.flush();
+    bt->flush();
+  }
+  delay(TANK_DISPATCH_DELAY);
 }
 
 /* vim: set ft=arduino et sw=2 ts=2: */

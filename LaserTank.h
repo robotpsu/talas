@@ -3,12 +3,18 @@
 
 #include <Arduino.h>
 #include <Servo.h>
+#include <SoftwareSerial.h>
 
 #define BT_STRING_TERMINATOR '\n'
 
-#define TANK_MAX_NAME_LENGTH 24
-#define TANK_MAX_HEALTH 3
+#define TANK_MAX_NAME_LENGTH  24 // characters
+#define TANK_MAX_HEALTH        3 // 1..3
+#define TANK_START_SPEED     255 // 0..255
+#define TANK_BT_SPEED      38400 // baud
+#define TANK_BT_TIMEOUT      100 // ms
+#define TANK_DISPATCH_DELAY   10 // ms
 
+// Turret angles
 #define TURRET_START_H 90
 #define TURRET_START_V  0
 #define TURRET_DELTA_H  1
@@ -77,6 +83,8 @@ class LaserTank
     LaserTank(String);
 
     // Set Arduino board pins
+    void attachBluetooth();
+    void attachBluetooth(byte, byte);
     void attachDriver(byte, byte, byte, byte);
     void attachDriver(byte, byte, byte, byte, byte, byte);
     void attachTurret(byte);
@@ -100,11 +108,14 @@ class LaserTank
     void resetTurret();
 
     // Dispatch commands
-    void dispatch(byte);
+    void dispatch();
 
   private:
     static const char stringTerminator;
     static const byte maxHealth;
+
+    String name;
+    byte health;  // 0..3
 
     // L289N driver input pins
     byte pinIn1, pinIn2, pinIn3, pinIn4;
@@ -113,17 +124,24 @@ class LaserTank
     // Health indicator (LEDs) control pins
     byte pinDead, pinLife1, pinLife2, pinLife3;
 
-    String name;
-    byte health;
+    // Drives speed
+    byte speed1, speed2;
 
+    SoftwareSerial *bt;
     Turret turret;
 
     // Tank movement
+    void move(byte);
+
     void forward();
     void backward();
     void left();
     void right();
+
     void stop();
+
+    void slower();
+    void faster();
 
     // Handle hit
     void hit();
