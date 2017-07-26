@@ -2,7 +2,7 @@
  * Tank turret class implementation
  */
 
-#include "LaserTank.h"
+#include "Turret.h"
 
 Turret::Turret() {
   _pinLaser = 0;
@@ -48,11 +48,11 @@ void Turret::disable() {
 }
 
 byte Turret::getH() {
-  return _h;
+  return _servoH.read();
 }
 
 byte Turret::getV() {
-  return _v;
+  return _servoV.read();
 }
 
 void Turret::reset() {

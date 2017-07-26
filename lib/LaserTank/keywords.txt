@@ -1,0 +1,33 @@
+# Data types (KEYWORD1)
+LaserTank	KEYWORD1
+Turret	KEYWORD1
+
+# Methods and functions (KEYWORD2)
+attachDriver	KEYWORD2
+attachTurret	KEYWORD2
+attachHealth	KEYWORD2
+attachBluetooth	KEYWORD2
+getHealth	KEYWORD2
+getName	KEYWORD2
+setName	KEYWORD2
+getTurretH	KEYWORD2
+getTurretV	KEYWORD2
+resetHealth	KEYWORD2
+resetTurret	KEYWORD2
+forward	KEYWORD2
+backward	KEYWORD2
+left	KEYWORD2
+right	KEYWORD2
+stop	KEYWORD2
+slower	KEYWORD2
+faster	KEYWORD2
+turretUp	KEYWORD2
+turretDown	KEYWORD2
+turretLeft	KEYWORD2
+turretRight	KEYWORD2
+fire	KEYWORD2
+hit	KEYWORD2
+setup	KEYWORD2
+loop	KEYWORD2
+
+# vim: set noet:
