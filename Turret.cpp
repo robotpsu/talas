@@ -4,96 +4,92 @@
 
 #include "LaserTank.h"
 
-const byte Turret::h0 = TURRET_START_H;
-const byte Turret::v0 = TURRET_START_V;
-
 Turret::Turret() {
-  pinLaser = pinH = pinV = 0;
+  _pinLaser = 0;
 
-  h = h0;
-  v = v0;
+  _h = h0 = TURRET_START_H;
+  _v = v0 = TURRET_START_V;
 
-  dH = TURRET_DELTA_H;
-  dV = TURRET_DELTA_V;
+  _dH = TURRET_DELTA_H;
+  _dV = TURRET_DELTA_V;
 
-  minH = TURRET_MIN_H; maxH = TURRET_MAX_H;
-  minV = TURRET_MIN_V; maxV = TURRET_MAX_V;
+  _minH = TURRET_MIN_H; _maxH = TURRET_MAX_H;
+  _minV = TURRET_MIN_V; _maxV = TURRET_MAX_V;
 
-  enabled = true;
+  _enabled = true;
 }
 
-void Turret::setRange(byte min_h, byte max_h, byte min_v, byte max_v) {
-  minH = min_h; maxH = max_h;
-  minV = min_v; maxV = max_v;
+void Turret::setRange(byte minH, byte maxH, byte minV, byte maxV) {
+  _minH = minH; _maxH = maxH;
+  _minV = minV; _maxV = maxV;
 }
 
-void Turret::setDelta(byte dh, byte dv) {
-  dH = dh;
-  dV = dv;
+void Turret::setDelta(byte dH, byte dV) {
+  _dH = dH;
+  _dV = dV;
 }
 
-void Turret::attach(byte laser) {
-  pinMode(pinLaser = laser, OUTPUT);
-  pinH = pinV = 0;
+void Turret::attach(byte pinLaser) {
+  pinMode(_pinLaser = pinLaser, OUTPUT);
 }
 
-void Turret::attach(byte laser, byte p0, byte p1) {
-  attach(laser);
-  servoH.attach(pinH = p0);
-  servoV.attach(pinV = p1);
+void Turret::attach(byte pinLaser, byte pinH, byte pinV) {
+  attach(pinLaser);
+  _servoH.attach(pinH);
+  _servoV.attach(pinV);
 }
 
 void Turret::enable() {
-  enabled = true;
+  _enabled = true;
 }
 
 void Turret::disable() {
-  enabled = false;
+  _enabled = false;
 }
 
 byte Turret::getH() {
-  return h;
+  return _h;
 }
 
 byte Turret::getV() {
-  return v;
+  return _v;
 }
 
 void Turret::reset() {
-  if (servoH.attached() && servoV.attached()) {
-    servoH.write(h = h0);
-    servoV.write(v = v0);
+  if (_servoH.attached() && _servoV.attached()) {
+    _servoH.write(_h = h0);
+    _servoV.write(_v = v0);
   }
 }
 
 void Turret::up() {
-  if (enabled && servoV.attached() && v < maxV)
-    servoV.write(v += dV);
+  if (_enabled && _servoV.attached() && _v < _maxV)
+    _servoV.write(_v += _dV);
 }
 
 void Turret::down() {
-  if (enabled && servoV.attached() && v > minV)
-    servoV.write(v -= dV);
+  if (_enabled && _servoV.attached() && _v > _minV)
+    _servoV.write(_v -= _dV);
 }
 
 void Turret::left() {
-  if (enabled && servoH.attached() && h > minH)
-    servoH.write(h -= dH);
+  if (_enabled && _servoH.attached() && _h > _minH)
+    _servoH.write(_h -= _dH);
 }
 
 void Turret::right() {
-  if (enabled && servoH.attached() && h < maxH)
-    servoH.write(h += dH);
+  if (_enabled && _servoH.attached() && _h < _maxH)
+    _servoH.write(_h += _dH);
 }
 
 void Turret::impulse(unsigned long length) {
-  digitalWrite(pinLaser, HIGH);
+  digitalWrite(_pinLaser, HIGH);
   delay(length);
-  digitalWrite(pinLaser, LOW);
+  digitalWrite(_pinLaser, LOW);
 }
 
 void Turret::fire() {
-  if (!enabled || !pinLaser) return;
+  if (!_enabled || !_pinLaser) return;
 
   impulse(5);
   delay(5);
