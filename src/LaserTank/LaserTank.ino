@@ -4,49 +4,31 @@
 
 #include <LaserTank.h>
 
-//#define USE_SW_SERIAL 1
+#define TANK_NAME "Laser tank 1"
 
-const String tankName = "Laser tank 1";
+// Driver
+#define PIN_IN1 2
+#define PIN_IN2 3
+#define PIN_IN3 4
+#define PIN_IN4 7
+#define PIN_EN1 5
+#define PIN_EN2 6
+// Turret
+#define PIN_LASER  8
+#define PIN_H      9
+#define PIN_V     10
+// Health indicator
+#define PIN_DEAD  A0
+#define PIN_LIFE1 A1
+#define PIN_LIFE2 A2
+#define PIN_LIFE3 A3
 
-// Arduino pins
-const byte
-  pinIn1 = 2,
-  pinIn2 = 3,
-  pinIn3 = 4,
-  pinIn4 = 7,
-  pinEn1 = 5,
-  pinEn2 = 6,
-  pinLaser = 8,
-  pinH = 9,
-  pinV = 10,
-#ifdef USE_SW_SERIAL
-  pinRx = 11,
-  pinTx = 12,
-#endif
-  pinDead = A0,
-  pinLife1 = A1,
-  pinLife2 = A2,
-  pinLife3 = A3;
-
-#ifdef USE_SW_SERIAL
-SoftwareSerial bt(pinRx, pinTx);
-# define TYPE SoftwareSerial
-# define BT bt
-#else
-# define TYPE HardwareSerial
-# ifdef SERIAL_PORT_HARDWARE_OPEN
-#  define BT SERIAL_PORT_HARDWARE_OPEN
-# else
-#  define BT SERIAL_PORT_HARDWARE
-# endif
-#endif
-LaserTank<TYPE> tank(tankName);
+LaserTank tank(TANK_NAME);
 
 void setup() {
-  tank.attachDriver(pinIn1, pinIn2, pinIn3, pinIn4, pinEn1, pinEn2);
-  tank.attachTurret(pinLaser);
-  tank.attachHealth(pinDead, pinLife1, pinLife2, pinLife3);
-  tank.attachBluetooth(&BT);
+  tank.attachDriver(PIN_IN1, PIN_IN2, PIN_IN3, PIN_IN4, PIN_EN1, PIN_EN2);
+  tank.attachTurret(PIN_LASER);
+  tank.attachHealth(PIN_DEAD, PIN_LIFE1, PIN_LIFE2, PIN_LIFE3);
 
   tank.setup();
 }
