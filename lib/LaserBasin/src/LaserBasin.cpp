@@ -1,73 +1,30 @@
 ﻿/*
- * LaserTank.cpp - LaserTank class implementation
+ * LaserBasin.cpp - LaserBasin class implementation
  */
 
-#include "LaserTank.h"
+#include "LaserBasin.h"
 
 #ifdef SERIAL_PORT_HARDWARE_OPEN
 # define BT SERIAL_PORT_HARDWARE_OPEN
-
-// HC-05 baud rates
-const unsigned long LaserTank::_rates[] = {
-    4800, 9600, 19200, 38400, 57600, 115200,
-    23400, 460800, 921600, 1382400};
-const size_t LaserTank::_numRates = sizeof(LaserTank::_rates) / sizeof(unsigned long);
-
-// HC-05 AT-commands to get some info
-const char *LaserTank::_cmds[] = {
-  "NAME", "VERSION", "UART", "ADDR", "PSWD", "ROLE", "CMODE", "CLASS", "IAC"};
-const size_t LaserTank::_numCmds = sizeof(LaserTank::_cmds) / sizeof(char*);
-
-unsigned long LaserTank::inCmdMode() {
-  char buf[32];
-
-  for(size_t i = 0; i < _numRates; i++) {
-    BT.begin(_rates[i]);
-    BT.setTimeout(100);
-    BT.flush();
-    BT.write("AT\r\n");
-    if (BT.readBytes(buf, 32) > 0)
-      return _atMode = _rates[i];
-    BT.end();
-  }
-
-  return _atMode = 0;
-}
-
-void LaserTank::printBtInfo() {
-  for (size_t i = 0; i < _numCmds; i++) {
-    BT.write("AT+"); BT.write(_cmds[i]); BT.write("?\r\n");
-    String s = BT.readString();
-    if (!s.length()) continue;
-    if (s.endsWith("OK\r\n")) {
-      s.remove(s.indexOf('\r'));
-      SERIAL_PORT_MONITOR.println(s);
-    } else {
-      SERIAL_PORT_MONITOR.write('+');
-      SERIAL_PORT_MONITOR.print(_cmds[i]);
-      SERIAL_PORT_MONITOR.print(":FAIL");
-    }
-  }
-}
 #else
 # define BT SERIAL_PORT_HARDWARE
 #endif
 
-LaserTank::LaserTank(String n) : _name(n) {
+LaserBasin::LaserBasin(String n) : _name(n) {
   _pinRight1 = _pinRight2 = _pinLeft1 = _pinLeft2 = _pinRightEn = _pinLeftEn
     = _pinDead = _pinLife1 = _pinLife2 = _pinLife3 = 0;
-  _health = TANK_MAX_HEALTH;
-  _speedRight = _speedLeft = TANK_START_SPEED;
+  _health = BASIN_MAX_HEALTH;
+  _speedRight = _speedLeft = BASIN_START_SPEED;
 }
 
-void LaserTank::setup() {
+void LaserBasin::setup() {
   resetHealth();
   resetTurret();
 
-#ifdef SERIAL_PORT_HARDWARE_OPEN
+#if defined(SERIAL_PORT_HARDWARE_OPEN) && defined(USE_AT_MODE)
   if (unsigned long rate = inCmdMode()) {
     SERIAL_PORT_MONITOR.begin(SERIAL_SPEED);
-    SERIAL_PORT_MONITOR.print("Laser tank «");
+    SERIAL_PORT_MONITOR.print("Laser basin «");
     SERIAL_PORT_MONITOR.print(_name);
     SERIAL_PORT_MONITOR.println("» configuration");
     SERIAL_PORT_MONITOR.println("\nBluetooth module info:");
@@ -78,9 +35,10 @@ void LaserTank::setup() {
 #endif
   BT.begin(BT_SPEED);
   BT.setTimeout(BT_TIMEOUT);
+  BT.flush();
 }
 
-void LaserTank::attachDriver(byte pinIn1, byte pinIn2, byte pinIn3, byte pinIn4) {
+void LaserBasin::attachDriver(byte pinIn1, byte pinIn2, byte pinIn3, byte pinIn4) {
   pinMode(_pinRight1 = pinIn1, OUTPUT);
   pinMode(_pinRight2 = pinIn2, OUTPUT);
   pinMode(_pinLeft1  = pinIn3, OUTPUT);
@@ -88,7 +46,7 @@ void LaserTank::attachDriver(byte pinIn1, byte pinIn2, byte pinIn3, byte pinIn4)
   _pinRightEn = _pinLeftEn = 0;
 }
 
-void LaserTank::attachDriver(
+void LaserBasin::attachDriver(
     byte pinIn1, byte pinIn2, byte pinIn3, byte pinIn4,
     byte pinEn1, byte pinEn2) {
   attachDriver(pinIn1, pinIn2, pinIn3, pinIn4);
@@ -96,50 +54,50 @@ void LaserTank::attachDriver(
   pinMode(_pinLeftEn  = pinEn2, OUTPUT);
 }
 
-void LaserTank::attachTurret(byte pinLaser) {
+void LaserBasin::attachTurret(byte pinLaser) {
   _turret.attach(pinLaser);
 }
 
-void LaserTank::attachTurret(byte pinLaser, byte pinH, byte pinV) {
+void LaserBasin::attachTurret(byte pinLaser, byte pinH, byte pinV) {
   _turret.attach(pinLaser, pinH, pinV);
 }
 
-void LaserTank::attachHealth(byte pinDead, byte pinLife1, byte pinLife2, byte pinLife3) {
+void LaserBasin::attachHealth(byte pinDead, byte pinLife1, byte pinLife2, byte pinLife3) {
   pinMode(_pinDead  = pinDead,  OUTPUT);
   pinMode(_pinLife1 = pinLife1, OUTPUT);
   pinMode(_pinLife2 = pinLife2, OUTPUT);
   pinMode(_pinLife3 = pinLife3, OUTPUT);
 }
 
-byte LaserTank::getHealth() {
+byte LaserBasin::getHealth() {
   return _health;
 }
 
-String LaserTank::getName() {
+String LaserBasin::getName() {
   return _name;
 }
 
-void LaserTank::setName(String n) {
-  _name = n.substring(0, TANK_MAX_NAME_LENGTH);
+void LaserBasin::setName(String n) {
+  _name = n.substring(0, BASIN_MAX_NAME_LENGTH);
 }
 
-void LaserTank::setTurretRange(byte minH, byte maxH, byte minV, byte maxV) {
+void LaserBasin::setTurretRange(byte minH, byte maxH, byte minV, byte maxV) {
   _turret.setRange(minH, maxH, minV, maxV);
 }
 
-void LaserTank::setTurretDelta(byte dH, byte dV) {
+void LaserBasin::setTurretDelta(byte dH, byte dV) {
   _turret.setDelta(dH, dV);
 }
 
-byte LaserTank::getTurretH() {
+byte LaserBasin::getTurretH() {
   return _turret.getH();
 }
 
-byte LaserTank::getTurretV() {
+byte LaserBasin::getTurretV() {
   return _turret.getV();
 }
 
-void LaserTank::move(byte direction) {
+void LaserBasin::move(byte direction) {
   if (!_health || !_pinRight1 || !_pinLeft1) return;
 
   digitalWrite(_pinRight1, bitRead(direction, 0));
@@ -153,57 +111,61 @@ void LaserTank::move(byte direction) {
     analogWrite(_pinLeftEn,  direction ? _speedLeft  : 0);
 }
 
-void LaserTank::forward() {
-  move(0b0101);
-}
-
-void LaserTank::backward() {
-  move(0b1010);
-}
-
-void LaserTank::left() {
+void LaserBasin::forward() {
   move(0b1001);
 }
 
-void LaserTank::right() {
+void LaserBasin::backward() {
   move(0b0110);
 }
 
-void LaserTank::stop() {
+void LaserBasin::left() {
+  move(0b0101);
+}
+
+void LaserBasin::right() {
+  move(0b1010);
+}
+
+void LaserBasin::stop() {
   move(0);
 }
 
-void LaserTank::faster() {
+void LaserBasin::setSpeed(byte speed) {
+  _speedRight = _speedLeft = speed;
+}
+
+void LaserBasin::faster() {
   _speedRight++;
   _speedLeft++;
 }
 
-void LaserTank::slower() {
+void LaserBasin::slower() {
   _speedRight--;
   _speedLeft--;
 }
 
-void LaserTank::turretUp() {
+void LaserBasin::turretUp() {
   _turret.up();
 }
 
-void LaserTank::turretDown() {
+void LaserBasin::turretDown() {
   _turret.down();
 }
 
-void LaserTank::turretLeft() {
+void LaserBasin::turretLeft() {
   _turret.left();
 }
 
-void LaserTank::turretRight() {
+void LaserBasin::turretRight() {
   _turret.right();
 }
 
-void LaserTank::fire() {
+void LaserBasin::fire() {
   _turret.fire();
 }
 
-void LaserTank::hit() {
+void LaserBasin::hit() {
   if (!_health) return;
 
   if (--_health) {
@@ -214,7 +176,7 @@ void LaserTank::hit() {
   showHealth();
 }
 
-void LaserTank::showHealth() {
+void LaserBasin::showHealth() {
   if (!_pinDead) return;
 
   digitalWrite(_pinLife3, _health >= 3);
@@ -223,18 +185,18 @@ void LaserTank::showHealth() {
   digitalWrite(_pinDead, !_health);
 }
 
-void LaserTank::resetHealth() {
-  _health = TANK_MAX_HEALTH;
+void LaserBasin::resetHealth() {
+  _health = BASIN_MAX_HEALTH;
   showHealth();
   _turret.enable();
 }
 
-void LaserTank::resetTurret() {
+void LaserBasin::resetTurret() {
   _turret.reset();
 }
 
-void LaserTank::loop() {
-#ifdef SERIAL_PORT_HARDWARE_OPEN
+void LaserBasin::loop() {
+#if defined(SERIAL_PORT_HARDWARE_OPEN) && defined(USE_AT_MODE)
   if (_atMode) {
     if (BT.available())
       SERIAL_PORT_MONITOR.write(BT.read());
@@ -248,16 +210,18 @@ void LaserTank::loop() {
 #endif
   if (BT.available()) {
     switch (BT.read()) {
-      // Move tank
+      // Move
       case 'w': forward();  break;
       case 'a': left();     break;
       case 's': backward(); break;
       case 'd': right();    break;
 
-      // Stop tank
+      // Stop
       case 'x': stop(); break;
 
       // Control speed
+      case '^': setSpeed(BT.read()); break;
+      case 'V': BT.write(_speedRight); break;
       case '-': slower(); break;
       case '+': faster(); break;
 
@@ -276,21 +240,66 @@ void LaserTank::loop() {
       // Simulate hit
       case '*': hit(); break;
 
-      // Reset tank health
+      // Reset health
       case 'r': resetHealth(); break;
 
-      // Send tank data
-      case 'M': BT.write(TANK_MAX_HEALTH); break;
+      // Send data
+      case 'M': BT.write(BASIN_MAX_HEALTH); break;
       case 'H': BT.write(_health); break;
       case 'N': BT.print(_name); BT.print(BT_STR_TERM); break;
       case '/': BT.write(_turret.getH()); BT.write(_turret.getV()); break;
 
-      // Rename tank
+      // Rename
       case 'n': setName(BT.readStringUntil(BT_STR_TERM)); break;
     }
     BT.flush();
   }
-  delay(TANK_DISPATCH_DELAY);
+  delay(BASIN_DISPATCH_DELAY);
 }
+
+#if defined(SERIAL_PORT_HARDWARE_OPEN) && defined(USE_AT_MODE)
+// HC-05 baud rates
+const unsigned long LaserBasin::_rates[] = {
+    4800, 9600, 19200, 38400, 57600, 115200,
+    23400, 460800, 921600, 1382400};
+const size_t LaserBasin::_numRates = sizeof(LaserBasin::_rates) / sizeof(unsigned long);
+
+// HC-05 AT-commands to get some info
+const char *LaserBasin::_cmds[] = {
+  "NAME", "VERSION", "UART", "ADDR", "PSWD", "ROLE", "CMODE", "CLASS", "IAC"};
+const size_t LaserBasin::_numCmds = sizeof(LaserBasin::_cmds) / sizeof(char*);
+
+unsigned long LaserBasin::inCmdMode() {
+  char buf[32];
+
+  for(size_t i = 0; i < _numRates; i++) {
+    BT.begin(_rates[i]);
+    BT.setTimeout(100);
+    BT.flush();
+    BT.write("AT\r\n");
+    if (BT.readBytes(buf, 32) > 0)
+      return _atMode = _rates[i];
+    BT.end();
+  }
+
+  return _atMode = 0;
+}
+
+void LaserBasin::printBtInfo() {
+  for (size_t i = 0; i < _numCmds; i++) {
+    BT.write("AT+"); BT.write(_cmds[i]); BT.write("?\r\n");
+    String s = BT.readString();
+    if (!s.length()) continue;
+    if (s.endsWith("OK\r\n")) {
+      s.remove(s.indexOf('\r'));
+      SERIAL_PORT_MONITOR.println(s);
+    } else {
+      SERIAL_PORT_MONITOR.write('+');
+      SERIAL_PORT_MONITOR.print(_cmds[i]);
+      SERIAL_PORT_MONITOR.print(":FAIL");
+    }
+  }
+}
+#endif
 
 /* vim: ft=arduino et sw=2 ts=2: */

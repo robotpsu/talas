@@ -7,8 +7,8 @@
 // Turret angles
 #define TURRET_START_H 90
 #define TURRET_START_V  0
-#define TURRET_DELTA_H  1
-#define TURRET_DELTA_V  1
+#define TURRET_DELTA_H  2
+#define TURRET_DELTA_V  2
 #define TURRET_MIN_H   30
 #define TURRET_MAX_H  150
 #define TURRET_MIN_V    0
@@ -17,6 +17,7 @@
 class Turret
 {
 public:
+  // Initial position
   byte h0, v0;
 
   // Constructor
@@ -52,7 +53,7 @@ public:
   void fire();
 
 private:
-  boolean _enabled;
+  volatile bool _enabled;
   byte _pinLaser;
   Servo _servoH, _servoV;
   byte _h, _v;

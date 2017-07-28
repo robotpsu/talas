@@ -1,5 +1,5 @@
-#ifndef LASERTANK_H
-#define LASERTANK_H
+#ifndef LaserBasin_h
+#define LaserBasin_h
 
 #include <Arduino.h>
 #include "Turret.h"
@@ -10,16 +10,16 @@
 #define BT_TIMEOUT 100 // ms
 #define BT_STR_TERM '\n'
 
-#define TANK_MAX_NAME_LENGTH  24 // characters
-#define TANK_MAX_HEALTH        3 // 1..3
-#define TANK_START_SPEED     127 // 0..255
-#define TANK_DISPATCH_DELAY   10 // ms
+#define BASIN_MAX_NAME_LENGTH  24 // characters
+#define BASIN_MAX_HEALTH        3 // 1..3
+#define BASIN_START_SPEED     127 // 0..255
+#define BASIN_DISPATCH_DELAY   10 // ms
 
-class LaserTank
+class LaserBasin
 {
 public:
   // Constructor
-  LaserTank(String);
+  LaserBasin(String);
 
   // Set Arduino board pins
   void attachDriver(byte, byte, byte, byte);
@@ -28,13 +28,13 @@ public:
   void attachTurret(byte, byte, byte);
   void attachHealth(byte, byte, byte, byte);
 
-  // Get tank data
+  // Get data
   byte getHealth();
   String getName();
   byte getTurretH();  // Turret horizontal angle
   byte getTurretV();  // Turret vertical angle
 
-  // Set tank data
+  // Set data
   void setName(String);
   void setStartSpeed(byte);
   void setTurretRange(byte, byte, byte, byte);
@@ -46,12 +46,15 @@ public:
   // Reset turret
   void resetTurret();
 
-  // Move tank
+  // Move
   void forward();
   void backward();
   void left();
   void right();
+  // Stop
   void stop();
+  // Control speed
+  void setSpeed(byte);
   void slower();
   void faster();
 
@@ -72,7 +75,7 @@ public:
 
 private:
   String _name;
-  byte _health;  // 0..3
+  volatile byte _health;  // 0..3
 
   // L289N driver input pins
   byte _pinRight1, _pinRight2, _pinLeft1, _pinLeft2;
@@ -90,15 +93,14 @@ private:
 
   void showHealth();
 
-#ifdef SERIAL_PORT_HARDWARE_OPEN
+#if defined(SERIAL_PORT_HARDWARE_OPEN) && defined(USE_AT_MODE)
   static const unsigned long _rates[];
   static const size_t _numRates;
   static const char *_cmds[];
   static const size_t _numCmds;
-
   // HC-05 AT-commands mode speed
   unsigned long _atMode;
-
+  // AT-commands mode functions
   unsigned long inCmdMode();
   void printBtInfo();
 #endif

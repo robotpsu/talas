@@ -1,12 +1,11 @@
 # Data types (KEYWORD1)
-LaserTank	KEYWORD1
+LaserBasin	KEYWORD1
 Turret	KEYWORD1
 
 # Methods and functions (KEYWORD2)
 attachDriver	KEYWORD2
 attachTurret	KEYWORD2
 attachHealth	KEYWORD2
-attachBluetooth	KEYWORD2
 getHealth	KEYWORD2
 getName	KEYWORD2
 setName	KEYWORD2
