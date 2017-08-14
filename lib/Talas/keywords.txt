@@ -1,0 +1,60 @@
+#######################################
+# Syntax coloring map for TALAS library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+Talas	KEYWORD1
+Turret	KEYWORD1
+
+#######################################
+# Methods and functions (KEYWORD2)
+#######################################
+attachHealth	KEYWORD2
+attachDriver	KEYWORD2
+attachTurret	KEYWORD2
+attachHitDetector	KEYWORD2
+attachBluetooth	KEYWORD2
+
+name	KEYWORD2
+
+health	KEYWORD2
+resetHealth	KEYWORD2
+
+handleImpulse	KEYWORD2
+hit	KEYWORD2
+
+forward	KEYWORD2
+backward	KEYWORD2
+left	KEYWORD2
+right	KEYWORD2
+stop	KEYWORD2
+setSpeed	KEYWORD2
+slower	KEYWORD2
+faster	KEYWORD2
+
+setTurretRange	KEYWORD2
+setTurretDelta	KEYWORD2
+resetTurret	KEYWORD2
+getTurretH	KEYWORD2
+getTurretV	KEYWORD2
+turretUp	KEYWORD2
+turretDown	KEYWORD2
+turretLeft	KEYWORD2
+turretRight	KEYWORD2
+
+fire	KEYWORD2
+
+dispatch	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+talas	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+# vim: set noet:
