@@ -1,5 +1,5 @@
 /**
- * \file     Talas.cpp
+ * \file
  * \brief    Talas class implementation.
  * \author   Vasiliy Polyakov <vp@psu.ru>
  * \authors  RoboPSU https://vk.com/robotpsu
@@ -18,8 +18,8 @@
 # endif
 #endif
 
-/*
- * List of impulses and pauses between them.
+/**
+ * List of laser gun impulses and pauses between them.
  * Contains lengths in ms.
  */
 const size_t Talas::_impulses[] = {59};
@@ -40,8 +40,7 @@ void Talas::attachHealth(uint8_t pin0, uint8_t pin1, uint8_t pin2, uint8_t pin3)
   resetHealth();
 }
 
-void Talas::attachDriver(
-    uint8_t pinIn1, uint8_t pinIn2, uint8_t pinIn3, uint8_t pinIn4) {
+void Talas::attachDriver(uint8_t pinIn1, uint8_t pinIn2, uint8_t pinIn3, uint8_t pinIn4) {
   pinMode(_pinRight1 = pinIn1, OUTPUT);
   pinMode(_pinRight2 = pinIn2, OUTPUT);
   pinMode(_pinLeft1  = pinIn3, OUTPUT);
@@ -49,9 +48,8 @@ void Talas::attachDriver(
   _pinRightEn = _pinLeftEn = 0;
 }
 
-void Talas::attachDriver(
-    uint8_t pinIn1, uint8_t pinIn2, uint8_t pinIn3, uint8_t pinIn4,
-    uint8_t pinEnA, uint8_t pinEnB) {
+void Talas::attachDriver(uint8_t pinIn1, uint8_t pinIn2, uint8_t pinIn3, uint8_t pinIn4,
+                         uint8_t pinEnA, uint8_t pinEnB) {
   attachDriver(pinIn1, pinIn2, pinIn3, pinIn4);
   pinMode(_pinRightEn = pinEnA, OUTPUT);
   pinMode(_pinLeftEn  = pinEnB, OUTPUT);
@@ -75,6 +73,7 @@ void Talas::attachHitDetector(uint8_t pinHit) {
 
 void Talas::attachBluetooth() {
 #if defined(SERIAL_PORT_HARDWARE_OPEN) && defined(USE_AT_MODE)
+  // Try AT-commands mode.
   if (unsigned long rate = inCmdMode()) {
     SERIAL_PORT_MONITOR.begin(SERIAL_SPEED);
     SERIAL_PORT_MONITOR.print("TALAS «");
@@ -117,7 +116,7 @@ uint8_t Talas::health() {
   return _health;
 }
 
-/*
+/**
  * Move or stop TALAS.
  * Send signals to the driver.
  * \param  direction  bit mask for motors:
@@ -138,20 +137,22 @@ void Talas::move(uint8_t direction) {
     analogWrite(_pinLeftEn,  direction ? _speedLeft  : 0);
 }
 
+// If TALAS moves in wrong direction then reconnect driver
+// and motors in the right order.
 void Talas::forward() {
-  move(0b1001);
-}
-
-void Talas::backward() {
-  move(0b0110);
-}
-
-void Talas::left() {
   move(0b0101);
 }
 
-void Talas::right() {
+void Talas::backward() {
   move(0b1010);
+}
+
+void Talas::left() {
+  move(0b1001);
+}
+
+void Talas::right() {
+  move(0b0110);
 }
 
 void Talas::stop() {
@@ -222,14 +223,14 @@ void Talas::fire() {
   }
 }
 
-/*
+/**
  * Read value from photoresistor if it's connected.
  */
 int Talas::getLight() {
   return _pinHit ? analogRead(_pinHit) : 0;
 }
 
-/*
+/**
  * Get illuminance statistics and light conditions.
  */
 void Talas::checkLight() {
@@ -249,13 +250,13 @@ void Talas::checkLight() {
 
 void Talas::setImpulseTimer() {
   // See http://www.robotshop.com/letsmakerobots/arduino-101-timers-and-interrupts
-  noInterrupts();                  // Disable interrupts
-  TCCR3A = TCCR3B = TCNT3 = 0;     // Reset registers
-  OCR3B = F_CPU / _timerFreq - 1;  // Set frequency
-  bitSet(TCCR3B, WGM32);           // CTC mode
-  bitSet(TCCR3B, CS30);            // Internal clock
-  bitSet(TIMSK3, OCIE3B);          // Enable compare handler
-  interrupts();                    // Enable interrupts
+  noInterrupts();                        // Disable interrupts
+  TCCR3A = TCCR3B = TCNT3 = 0;           // Reset registers
+  OCR3B = F_CPU / TALAS_TIMER_FREQ - 1;  // Set frequency
+  bitSet(TCCR3B, WGM32);                 // CTC mode
+  bitSet(TCCR3B, CS30);                  // Internal clock
+  bitSet(TIMSK3, OCIE3B);                // Enable compare handler
+  interrupts();                          // Enable interrupts
 
   _impulse.n = _impulse.length = 0;
   _impulse.value = LOW;
@@ -269,8 +270,8 @@ void Talas::handleImpulse() {
   if (value != _impulse.value) {
     // Next impulse detected
     if ((_impulse.n & 1  // Some binary magic
-        || _impulse.length > _impulses[_impulse.n] - _impulseVar
-        && _impulse.length < _impulses[_impulse.n] + _impulseVar)
+        || _impulse.length > _impulses[_impulse.n] - IMPULSE_VARIANCE
+        && _impulse.length < _impulses[_impulse.n] + IMPULSE_VARIANCE)
         && _impulse.n < _impulseMax) {
       _impulse.n++;  // OK, continue detection
     } else {
@@ -324,7 +325,7 @@ void Talas::dispatch() {
       // Control speed
       case '-': slower(); break;
       case '+': faster(); break;
-      case '^': speed(BT.read()); break;
+      case '^': speed(BT.read());  break;
       case 'V': BT.write(speed()); break;
 
       // Rotate turret
@@ -349,7 +350,7 @@ void Talas::dispatch() {
 
       // Name
       case 'N': BT.print(_name); BT.print(BT_STR_TERM); break;
-      case 'n': name(BT.readStringUntil(BT_STR_TERM)); break;
+      case 'n': name(BT.readStringUntil(BT_STR_TERM));  break;
     }
     BT.flush();
   }

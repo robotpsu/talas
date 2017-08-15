@@ -1,5 +1,5 @@
 /**
- * \file     Talas.h
+ * \file
  * \brief    Talas library main header file.
  * \author   Vasiliy Polyakov <vp@psu.ru>
  * \authors  RoboPSU https://vk.com/robotpsu
@@ -23,7 +23,9 @@
 #define TALAS_START_SPEED     150  ///< Start speed value (0..255).
 #define TALAS_LIGHT_SAMPLES   100  ///< Number of light samples for illuminance check.
 #define TALAS_LIGHT_DELAY      20  ///< Delay between light samples (ms).
+#define TALAS_TIMER_FREQ     1000  ///< Hit detector timer frequency (Hz). 
 #define TALAS_DISPATCH_DELAY   10  ///< Delay between dispatch iterations (ms).
+#define IMPULSE_VARIANCE       10  ///< Impulse length variance (s).
 
 #define SERIAL_SPEED  9600  ///< Serial port speed rate (baud).
 #define BT_SPEED     38400  ///< Bluetooth speed rate (baud).
@@ -35,9 +37,9 @@
  * Contains information about received laser impulses.
  */
 typedef struct {
-  uint16_t n;       ///< Impulse number
-  uint16_t length;  ///< Impulse length (ms)
-  uint16_t value;   ///< Impulse value (HIGH or LOW)
+  uint16_t n;       ///< Impulse number.
+  uint16_t length;  ///< Impulse length (ms).
+  uint16_t value;   ///< Impulse value (\c HIGH or \c LOW).
 } Impulse;
 
 /**
@@ -237,35 +239,33 @@ public:
   /**
    * Dispatch Bluetooth commands.
    * Usage in Arduino sketch:
-  \code
-  void loop() {
-    talas.dispatch();
-  }
-  \endcode
+   * \code
+   * void loop() {
+   *   talas.dispatch();
+   * }
+   * \endcode
    */
   void dispatch();
   /** \} */
 
 private:
-  static const int _timerFreq = 1000; // Hz
-  static const int _impulseVar = 10; // ms
   static const size_t _impulses[];
   static const size_t _impulseMax;
 
-  String _name;
-
-  // L289N driver input pins
+  /// L289N driver input pins
   uint8_t _pinRight1, _pinRight2, _pinLeft1, _pinLeft2;
-  // L289N driver enable pins
+  /// L289N driver enable pins
   uint8_t _pinRightEn, _pinLeftEn;
-  // Health indicator (LED) control pins
+  /// Health indicator (LED) control pins
   uint8_t _pinHealth[TALAS_MAX_HEALTH + 1];
-  // Hit sensor pin
+  /// Hit sensor pin
   uint8_t _pinHit;
 
-  volatile uint8_t _health;  // 0..3
-  unsigned _lux;  // Illuminance
-  volatile Impulse _impulse;
+  String _name;              ///< Name.
+  volatile uint8_t _health;  ///< Health (0..3).
+
+  unsigned _lux;              ///< Illuminance.
+  volatile Impulse _impulse;  ///< Received impulse data.
 
   // Motors speed
   uint8_t _speedRight, _speedLeft;
@@ -279,16 +279,15 @@ private:
   void setImpulseTimer();
 
 #if defined(SERIAL_PORT_HARDWARE_OPEN) && defined(USE_AT_MODE)
-  static const unsigned long _rates[];
-  static const size_t _numRates;
-  static const char *_cmds[];
-  static const size_t _numCmds;
-  // HC-05 AT-commands mode speed rate
-  unsigned long _atMode;
+  // HC-05 Bluetooth module AT-commands mode
+  static const unsigned long _rates[];  ///< List of supported speed rates.
+  static const size_t _numRates;        ///< Number of supported speed rates.
+  static const char *_cmds[];           ///< Info commands list.
+  static const size_t _numCmds;         ///< Number of info commands.
+  unsigned long _atMode;                ///< Actual speed rate (baud).
 
-  // AT-commands mode functions
-  unsigned long inCmdMode();
-  void printBtInfo();
+  unsigned long inCmdMode();  ///< Whether module is in AT-commands mode.
+  void printBtInfo();         ///< Send information about module.
 #endif
 };
 

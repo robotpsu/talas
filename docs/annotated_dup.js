@@ -1,6 +1,6 @@
 var annotated_dup =
 [
-    [ "Impulse", "a00047.html", "a00047" ],
-    [ "Talas", "a00051.html", "a00051" ],
-    [ "Turret", "a00055.html", "a00055" ]
+    [ "Impulse", "struct_impulse.html", "struct_impulse" ],
+    [ "Talas", "class_talas.html", "class_talas" ],
+    [ "Turret", "class_turret.html", "class_turret" ]
 ];

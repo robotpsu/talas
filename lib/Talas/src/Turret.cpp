@@ -1,5 +1,5 @@
 /**
- * \file     Turret.cpp
+ * \file
  * \brief    Turret class implementation.
  * \author   Vasiliy Polyakov <vp@psu.ru>
  * \authors  RoboPSU https://vk.com/robotpsu

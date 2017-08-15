@@ -22,7 +22,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"a00032.html"
+"_talas_8cpp.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
