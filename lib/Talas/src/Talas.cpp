@@ -296,6 +296,7 @@ void Talas::hit() {
     _turret.enable();
   } else {
     _turret.disable();
+    stop();
   }
   showHealth();
 }
