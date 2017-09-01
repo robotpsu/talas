@@ -15,8 +15,8 @@
 // Turret angles
 #define TURRET_START_H 90  ///< Starting horizontal angle (degrees)
 #define TURRET_START_V 90  ///< Starting horizontal angle (degrees)
-#define TURRET_DELTA_H  2  ///< Horizontal increment/decrement (degrees)
-#define TURRET_DELTA_V  2  ///< Horizontal increment/decrement (degrees)
+#define TURRET_DELTA_H  1  ///< Horizontal increment/decrement (degrees)
+#define TURRET_DELTA_V  1  ///< Horizontal increment/decrement (degrees)
 #define TURRET_MIN_H   30  ///< Minimum horizontal angle (degrees)
 #define TURRET_MAX_H  150  ///< Maximum horizontal angle (degrees)
 #define TURRET_MIN_V   70  ///< Minimum vertical angle (degrees)
