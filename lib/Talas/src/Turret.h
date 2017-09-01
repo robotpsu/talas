@@ -2,7 +2,7 @@
  * \file
  * \brief    Turret class header file.
  * \author   Vasiliy Polyakov <vp@psu.ru>
- * \authors  RoboPSU https://vk.com/robotpsu
+ * \authors  RobotPSU https://vk.com/robotpsu
  * \date     2017
  */
 

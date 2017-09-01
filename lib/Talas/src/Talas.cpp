@@ -2,7 +2,7 @@
  * \file
  * \brief    Talas class implementation.
  * \author   Vasiliy Polyakov <vp@psu.ru>
- * \authors  RoboPSU https://vk.com/robotpsu
+ * \authors  RobotPSU https://vk.com/robotpsu
  * \date     2017
  */
 
