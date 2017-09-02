@@ -25,7 +25,7 @@
 #define TALAS_LIGHT_DELAY      20  ///< Delay between light samples (ms).
 #define TALAS_TIMER_FREQ     1000  ///< Hit detector timer frequency (Hz). 
 #define TALAS_DISPATCH_DELAY   10  ///< Delay between dispatch iterations (ms).
-#define IMPULSE_VARIANCE       20  ///< Impulse length variance (s).
+#define IMPULSE_VARIANCE       50  ///< Impulse length variance (s).
 
 #define SERIAL_SPEED  9600  ///< Serial port speed rate (baud).
 #define BT_SPEED     38400  ///< Bluetooth speed rate (baud).

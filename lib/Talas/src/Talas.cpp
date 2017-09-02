@@ -22,7 +22,7 @@
  * List of laser gun impulses and pauses between them.
  * Contains lengths in ms.
  */
-const size_t Talas::_impulses[] = {100};
+const size_t Talas::_impulses[] = {100, 80, 100};
 const size_t Talas::_impulseMax = sizeof(Talas::_impulses) / sizeof(size_t);
 
 Talas::Talas(String n) : _name(n) {
