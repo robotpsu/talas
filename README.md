@@ -1,6 +1,6 @@
 # ТАЛАС
 
-Тазик лазерный самоходный (ТАЛАС).
+ТАЛАС — ТАЛАС лазерный самоходный.
 
 ## Библиотека
 
@@ -18,19 +18,9 @@
 
 Библиотека и скетч предназначены для выполнения на [Arduino Mega 2560 Rev3](https://store.arduino.cc/arduino-mega-2560-rev3).
 
-## Android
+## Приложение для Android [![Доступно в Google Play](resources/google-play-badge-small.png "Доступно в Google Play")](https://play.google.com/store/apps/details?id=appinventor.ai_vvp_psu.TALAS&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1 "Доступно в Google Play")
 
-Для создания приложения для Android использован [MIT App Inventor 2](http://appinventor.mit.edu/explore/).
-
-### Иконки
-
-* ![НЛО](resources/ufo-16.png "НЛО") — автор: [Pixel Buddha](https://www.flaticon.com/authors/pixel-buddha), лицензия: [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ "Creative Commons BY 3.0")
-* [Material Design](https://material.io/icons/)
-
-### Ошибки
-
-* Bluetooth.Connect: 507: Unable to connect. Is the device turned on?
-* Bluetooth.SendText: 515: Not connected to a Bluetooth device.
+Для создания приложения использован [MIT App Inventor 2](http://appinventor.mit.edu/explore/).
 
 ## Команды
 
@@ -101,3 +91,9 @@
 * [`docs/`](https://github.com/vpsu/talas/blob/master/docs) — [документация](https://vpsu.github.io/talas/)
 * [`Doxyfile`](https://github.com/vpsu/talas/blob/master/Doxyfile) — настройки [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
 * [`README.md`](https://github.com/vpsu/talas/blob/master/README.md) — описание проекта
+
+## Источники и лицензии
+
+* ![НЛО](resources/ufo-16.png "НЛО") — автор: [Pixel Buddha](https://www.flaticon.com/authors/pixel-buddha), лицензия: [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/ "Creative Commons BY 3.0")
+* [Material Design](https://material.io/icons/)
+* Google Play и логотип Google Play являются товарными знаками корпорации Google Inc.
