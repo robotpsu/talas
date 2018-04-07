@@ -12,7 +12,7 @@
 
 ### Документация
 
-* [Описание API](https://vpsu.github.io/talas/)
+* [Описание API](https://robotpsu.github.io/talas/)
 
 ## Arduino
 
@@ -24,7 +24,7 @@
 
 ## Команды
 
-ТАЛАС управляется по Bluetooth с помощью следующих команд:
+ТАЛАС управляется по Bluetooth (serial connection) с помощью следующих символьных команд:
 
 * движение:
 	* `w` — вперёд;
@@ -72,25 +72,25 @@
 
 ## Описание файлов
 
-* [`lib/Talas/`](https://github.com/vpsu/talas/blob/master/lib/Talas) — библиотека для управления ТАЛАС
-    * [`src/`](https://github.com/vpsu/talas/blob/master/lib/Talas/src) — исходный код библиотеки
-        * [`Talas.h`](https://github.com/vpsu/talas/blob/master/lib/Talas/src/Talas.h) — заголовочный файл библиотеки
-        * [`Talas.cpp`](https://github.com/vpsu/talas/blob/master/lib/Talas/src/Talas.cpp) — класс [Talas](https://vpsu.github.io/talas/class_talas.html)
-        * [`Turret.h`](https://github.com/vpsu/talas/blob/master/lib/Talas/src/Turret.h) — заголовочный файл для класса Turret
-        * [`Turret.cpp`](https://github.com/vpsu/talas/blob/master/lib/Talas/src/Turret.cpp) — класс [Turret](https://vpsu.github.io/talas/class_turret.html)
-    * [`library.properties`](https://github.com/vpsu/talas/blob/master/lib/Talas/library.properties) — [метаданные](https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5:-Library-specification#library-metadata "Library metadata") библиотеки
-    * [`keywords.txt`](https://github.com/vpsu/talas/blob/master/lib/Talas/keywords.txt) — [ключевые слова](https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5:-Library-specification#keywords "Keywords") для подсветки синтаксиса в [Arduino IDE](https://www.arduino.cc/en/Main/Software#download)
-* [`lib/Servo/`](https://github.com/vpsu/talas/blob/master/lib/Servo) — библиотека [Servo](https://github.com/arduino-libraries/Servo) для работы с серводвигателями и шаговыми двигателями ([подмодуль](https://git-scm.com/book/ru/v2/%D0%98%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-Git-%D0%9F%D0%BE%D0%B4%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D0%B8 "Git - Подмодули"))
-* [`src/Talas/`](https://github.com/vpsu/talas/blob/master/src/Talas)
-    * [`Talas.ino`](https://github.com/vpsu/talas/blob/master/src/Talas/Talas.ino) — скетч для Arduino
-    * [`Talas.fz`](https://github.com/vpsu/talas/blob/master/src/Talas/Talas.fz) — скетч для [Fritzing](http://fritzing.org/home/)
-* [`android/`](https://github.com/vpsu/talas/blob/master/android)
-    * [`talas.aia`](https://github.com/vpsu/talas/blob/master/android/talas.aia) — проект [MIT App Inventor 2](http://appinventor.mit.edu/) (приложение для Android)
-* [`pcb/`](https://github.com/vpsu/talas/blob/master/pcb) — печатные платы
-* [`resources/`](https://github.com/vpsu/talas/blob/master/resources) — ресурсы для приложений (картинки, звуки и т. п.)
-* [`docs/`](https://github.com/vpsu/talas/blob/master/docs) — [документация](https://vpsu.github.io/talas/)
-* [`Doxyfile`](https://github.com/vpsu/talas/blob/master/Doxyfile) — настройки [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
-* [`README.md`](https://github.com/vpsu/talas/blob/master/README.md) — описание проекта
+* [`lib/Talas/`](https://github.com/robotpsu/talas/blob/master/lib/Talas) — библиотека для управления ТАЛАС
+    * [`src/`](https://github.com/robotpsu/talas/blob/master/lib/Talas/src) — исходный код библиотеки
+        * [`Talas.h`](https://github.com/robotpsu/talas/blob/master/lib/Talas/src/Talas.h) — заголовочный файл библиотеки
+        * [`Talas.cpp`](https://github.com/robotpsu/talas/blob/master/lib/Talas/src/Talas.cpp) — класс [Talas](https://robotpsu.github.io/talas/class_talas.html)
+        * [`Turret.h`](https://github.com/robotpsu/talas/blob/master/lib/Talas/src/Turret.h) — заголовочный файл для класса Turret
+        * [`Turret.cpp`](https://github.com/robotpsu/talas/blob/master/lib/Talas/src/Turret.cpp) — класс [Turret](https://robotpsu.github.io/talas/class_turret.html)
+    * [`library.properties`](https://github.com/robotpsu/talas/blob/master/lib/Talas/library.properties) — [метаданные](https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5:-Library-specification#library-metadata "Library metadata") библиотеки
+    * [`keywords.txt`](https://github.com/robotpsu/talas/blob/master/lib/Talas/keywords.txt) — [ключевые слова](https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5:-Library-specification#keywords "Keywords") для подсветки синтаксиса в [Arduino IDE](https://www.arduino.cc/en/Main/Software#download)
+* [`lib/Servo/`](https://github.com/robotpsu/talas/blob/master/lib/Servo) — библиотека [Servo](https://github.com/arduino-libraries/Servo) для работы с серводвигателями и шаговыми двигателями ([подмодуль](https://git-scm.com/book/ru/v2/%D0%98%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-Git-%D0%9F%D0%BE%D0%B4%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D0%B8 "Git - Подмодули"))
+* [`src/Talas/`](https://github.com/robotpsu/talas/blob/master/src/Talas)
+    * [`Talas.ino`](https://github.com/robotpsu/talas/blob/master/src/Talas/Talas.ino) — скетч для Arduino
+    * [`Talas.fz`](https://github.com/robotpsu/talas/blob/master/src/Talas/Talas.fz) — скетч для [Fritzing](http://fritzing.org/home/)
+* [`android/`](https://github.com/robotpsu/talas/blob/master/android)
+    * [`talas.aia`](https://github.com/robotpsu/talas/blob/master/android/talas.aia) — проект [MIT App Inventor 2](http://appinventor.mit.edu/) (приложение для Android)
+* [`pcb/`](https://github.com/robotpsu/talas/blob/master/pcb) — печатные платы
+* [`resources/`](https://github.com/robotpsu/talas/blob/master/resources) — ресурсы для приложений (картинки, звуки и т. п.)
+* [`docs/`](https://github.com/robotpsu/talas/blob/master/docs) — [документация](https://vpsu.github.io/talas/)
+* [`Doxyfile`](https://github.com/robotpsu/talas/blob/master/Doxyfile) — настройки [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
+* [`README.md`](https://github.com/robotpsu/talas/blob/master/README.md) — описание проекта
 
 ## Источники и лицензии
 
