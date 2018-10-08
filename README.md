@@ -36,7 +36,9 @@
 
 Библиотека и скетч предназначены для выполнения на [Arduino Mega 2560 Rev3](https://store.arduino.cc/arduino-mega-2560-rev3).
 
-## Приложение для Android [![Доступно в Google Play](resources/google-play-badge-small.png "Доступно в Google Play")](https://play.google.com/store/apps/details?id=appinventor.ai_vvp_psu.TALAS&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1 "Доступно в Google Play")
+## Мобильное приложение
+
+[![Доступно в Google Play](resources/google-play-badge-small.png "Доступно в Google Play")](https://play.google.com/store/apps/details?id=appinventor.ai_vvp_psu.TALAS&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1 "Доступно в Google Play")
 
 Для создания приложения использован [MIT App Inventor 2](http://appinventor.mit.edu/explore/).
 
