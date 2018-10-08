@@ -83,7 +83,6 @@
 * [Arduino Interrupts](http://gammon.com.au/interrupts)
 * [Arduino 101: Timers and Interrupts](http://www.robotshop.com/letsmakerobots/arduino-101-timers-and-interrupts)
 * [Photocell Tutorial](http://www.instructables.com/id/Photocell-tutorial/)
-* [HC-03/05 Embedded Bluetooth Serial Communication Module AT command set](http://eskimon.fr/wp-content/uploads/2014/10/commandes_AT_HC05.pdf)
 
 ### Datasheets
 
