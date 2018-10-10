@@ -1,9 +1,9 @@
 /**
  * \file
- * \brief    Turret class implementation.
- * \author   Vasiliy Polyakov <vp@psu.ru>
- * \authors  RobotPSU https://vk.com/robotpsu
- * \date     2017
+ * \brief   Turret class implementation.
+ * \author  Vasiliy Polyakov <vp@psu.ru>
+ * \author  RobotPSU https://robot.psu.ru/
+ * \date    2017-2018
  */
 
 #include "Turret.h"

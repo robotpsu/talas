@@ -1,9 +1,9 @@
 /**
  * \file
- * \brief    Talas class implementation.
- * \author   Vasiliy Polyakov <vp@psu.ru>
- * \authors  RobotPSU https://vk.com/robotpsu
- * \date     2017
+ * \brief   Talas class implementation.
+ * \author  Vasiliy Polyakov <vp@psu.ru>
+ * \author  RobotPSU https://robot.psu.ru/
+ * \date    2017-2018
  */
 
 #include "Talas.h"
@@ -245,7 +245,7 @@ void Talas::checkLight() {
   m /= TALAS_LIGHT_SAMPLES;             // Mean
   s = s / TALAS_LIGHT_SAMPLES - m * m;  // Variance
 
-  _lux = constrain(int(m + PI * s), 0, 1023);
+  _lux = constrain(int(m + 2. * s), 0, 1023);
 }
 
 void Talas::setImpulseTimer() {
@@ -265,13 +265,13 @@ void Talas::setImpulseTimer() {
 void Talas::handleImpulse() {
   TCNT3 = 0;  // Reset counter
 
-  int value = getLight() > _lux;
+  int value = getLight() >= _lux;
 
   if (value != _impulse.value) {
     // Next impulse detected
     if ((_impulse.n & 1  // Some binary magic
-        || _impulse.length > _impulses[_impulse.n] - IMPULSE_VARIANCE
-        && _impulse.length < _impulses[_impulse.n] + IMPULSE_VARIANCE)
+        || (_impulse.length > _impulses[_impulse.n] - IMPULSE_VARIANCE
+        && _impulse.length < _impulses[_impulse.n] + IMPULSE_VARIANCE))
         && _impulse.n < _impulseMax) {
       _impulse.n++;  // OK, continue detection
     } else {
@@ -290,13 +290,16 @@ void Talas::handleImpulse() {
 }
 
 void Talas::hit() {
-  if (!_health) return;
+  if (!_health) {
+    stop();
+    return;
+  }
 
   if (--_health) {
     _turret.enable();
   } else {
-    _turret.disable();
     stop();
+    _turret.disable();
   }
   showHealth();
 }

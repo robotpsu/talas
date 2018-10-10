@@ -1,9 +1,9 @@
 /**
  * \file
- * \brief    Turret class header file.
- * \author   Vasiliy Polyakov <vp@psu.ru>
- * \authors  RobotPSU https://vk.com/robotpsu
- * \date     2017
+ * \brief   Turret class header file.
+ * \author  Vasiliy Polyakov <vp@psu.ru>
+ * \author  RobotPSU https://robot.psu.ru/
+ * \date    2017-2018
  */
 
 #ifndef Turret_h
