@@ -34,7 +34,7 @@
 
 ## Arduino
 
-Библиотека и скетч предназначены для выполнения на [Arduino Mega 2560 Rev3](https://store.arduino.cc/arduino-mega-2560-rev3).
+Библиотека и скетч написаны для [Arduino Mega 2560 Rev3](https://store.arduino.cc/arduino-mega-2560-rev3).
 
 ## Мобильное приложение
 
