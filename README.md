@@ -6,9 +6,7 @@
 
 ### Установка
 
-Установка библиотеки Talas в Arduino IDE:
-
-1. В меню:
+1. В меню [Arduino IDE](https://www.arduino.cc/en/Main/Software#download):
     1. `Sketch` (`Скетч`)
     2. `Include Library` (`Подключить библиотеку`)
     3. `Add .ZIP Library…` (`Добавить .ZIP библиотеку…`)
@@ -83,6 +81,7 @@
 * [Arduino Interrupts](http://gammon.com.au/interrupts)
 * [Arduino 101: Timers and Interrupts](http://www.robotshop.com/letsmakerobots/arduino-101-timers-and-interrupts)
 * [Photocell Tutorial](http://www.instructables.com/id/Photocell-tutorial/)
+* [Serial Port Bluetooth Module (Master/Slave) : HC-05](https://www.itead.cc/wiki/Serial_Port_Bluetooth_Module_(Master/Slave)_:_HC-05#AT_command_Default)
 
 ### Datasheets
 
